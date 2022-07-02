@@ -1,3 +1,4 @@
 # autodutchaction
 
-uses `'x-user-email'` and `'x-user-token'` to fetch active listings, compile those listing ids, update price with a post request -100.
+- add request token creation (or sub browser)
+- fix auto price update 
