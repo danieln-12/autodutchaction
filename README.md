@@ -1,4 +1,4 @@
 # autodutchaction
 
 - add request token creation (or sub browser)
-- fix auto price update 
+gets active listings and undercuts $1 on all above current lowest ask
