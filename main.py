@@ -27,7 +27,7 @@ class style():
 
 
 cookies = {
-#fix auto user cookies
+#copy cookies from /listed response(don't expire afaik),
 }
 
 headers = {
@@ -46,13 +46,13 @@ headers = {
     'sec-fetch-mode': 'cors',
     'sec-fetch-site': 'same-origin',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-    'x-user-email': email,
-    'x-user-token': authtoken,
+    'x-user-email': #youremail,
+    'x-user-token': #yourtoken,
 }
 
 params = {
     'direction': 'desc',
-    'perPage': '80', #can edit depending on how many you want to sort
+    'perPage': '80',
     'sort': 'created_at',
     'status': [
         'on_sale',
@@ -66,11 +66,9 @@ params = {
 }
 
 def main():
-    print(style.YELLOW + f'[{datetime.now()}] => getting listing ids[]')
-    response = requests.get('https://sell.flightclub.com/api/me/listings', params=params, cookies=cookies, headers=headers)
-    
+    print(style.YELLOW + f'[{datetime.now()}] => getting listing ids[request/listings]')
+    response = requests.get('https://sell.flightclub.com/api/me/listings', params=params, cookies=cookies, headers=headers)    
     response_data_ids = response.json()
-    
     if response.status_code == 200:
         print(style.GREEN + f'[{datetime.now()}] => got listing ids[status:{response.status_code}]')
     else:
@@ -88,25 +86,23 @@ def main():
         price = response_price['priceCents']
         id = response_price['stockItemId']
         item = response_price['product']['name']
-        lowest_ask = response_price['currentLowestPrice']
         response = requests.get(f'https://sell.flightclub.com/api/me/stock/{listing_ids[i]}', cookies=cookies, headers=headers) 
         response_status = response.json()
-        pending = response_status["status"]
+        lowest_ask = response_status['lowestConsignedPriceCents']
         payout = ((0.905 * price) - 500 ) *0.971
         
-        if pending == "reserved":
+        if response_status["status"] == "reserved":
                 print(style.BLUE + f'[{datetime.now()}] => Pending Sold | Payout => {payout/100:.2f} | ID => {id} | Item => {item}')
+        elif response_status["status"] == "hidden":
+            print(style.WHITE + f'[{datetime.now()}] => Unknown Status | Payout => {payout/100:.2f} | ID => {id} | Item => {item}')
+        elif lowest_ask == None:
+                print(style.MAGENTA + f'[{datetime.now()}] => Listed | Current Price => {price/100:.2f} | Lowest Price => N/A | ID => {id} | Item => {item}')
         else:
             print(style.MAGENTA + f'[{datetime.now()}] => Listed | Current Price => {price/100:.2f} | Lowest Price => {lowest_ask/100:.2f} | ID => {id} | Item => {item}')
             if price > lowest_ask:
                 id_ucprice.append([id,lowest_ask-100])
-                print(style.RED + f'[{datetime.now()}] => Over Lowest Ask [{price/100:.2f}][{id}]')
-        
+                print(style.RED + f'[{datetime.now()}] => !Over Lowest Ask [{price/100:.2f}][{id}]')
 
-     
-
-        response = requests.get(f'https://sell.flightclub.com/api/me/stock/{listing_ids[i]}', cookies=cookies, headers=headers) 
-        response_status = response.json()
         
 
     for ids in id_ucprice:
@@ -117,17 +113,12 @@ def main():
         }
         response = requests.post(f'https://sell.flightclub.com/api/me/stock/{ids[0]}/pricing', cookies=cookies, headers=headers, json=post_data)
         update_data = json.loads(response.text)
-        response_price = update_data['priceCents']
-        r_item = update_data['name']
-        r_id = update_data['id']
-        unelgible = "{'message': 'This item is not currently eligible for a price adjustment. Please try again later.'}"
-        if update_data == unelgible:
-            print(style.RED + f'[{datetime.now()}] => Failed Updating | ID = > {r_id} | Item => {r_item}')
-            
-        if response_price == ids[1]:
-            print(style.GREEN + f'[{datetime.now()}] => Updated Price: {response_price/100:.2f} | ID = > {r_id} | Item => {r_item}')
+        if update_data["priceCents"] == ids[1]:
+            print(style.GREEN + f'[{datetime.now()}] => ' f'Updated Ask => ${update_data["priceCents"]/100:.2f}'
+              f'| ID = > {update_data["id"]}' 
+              f' | Item => {update_data["name"]}')
+        else:
+            print(style.RED + f'[{datetime.now()}] => unknown status[{response.text}]')
+
 
 main()
-
-
-#fix iteration and response {'message': 'id is invalid'}
