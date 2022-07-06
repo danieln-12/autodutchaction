@@ -120,7 +120,7 @@ def main():
         response = requests.post(f'https://sell.flightclub.com/api/me/stock/{ids[0]}/pricing', cookies=cookies, headers=headers, json=post_data)
         update_data = json.loads(response.text)
         if update_data["priceCents"] == ids[1]:
-            print(style.GREEN + f'[{datetime.now()}] => ' f'Updated Ask => ${update_data["priceCents"]/100:.2f}'
+            print(style.GREEN + f'[{datetime.now()}] => ' f'Updated Ask => ${update_data["priceCents"]/100:.2f} '
               f'| ID = > {update_data["id"]}' 
               f' | Item => {update_data["name"]}')
         else:
