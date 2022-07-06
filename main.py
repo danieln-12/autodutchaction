@@ -94,7 +94,13 @@ def main():
         if response_status["status"] == "reserved":
                 print(style.BLUE + f'[{datetime.now()}] => Pending Sold | Payout => {payout/100:.2f} | ID => {id} | Item => {item}')
         elif response_status["status"] == "hidden":
-            print(style.WHITE + f'[{datetime.now()}] => Unknown Status | Payout => {payout/100:.2f} | ID => {id} | Item => {item}')
+            print(style.WHITE + f'[{datetime.now()}] => Unknown Status: Hidden | Payout => {payout/100:.2f} | ID => {id} | Item => {item}')
+        elif response_status["status"] == "missing":
+            print(style.WHITE + f'[{datetime.now()}] => Unknown Status: Missing | Payout => {payout/100:.2f} | ID => {id} | Item => {item}')
+        elif response_status["status"] == "pending_writeoff":
+            print(style.WHITE + f'[{datetime.now()}] => Unknown Status: Pending Writeoff | Payout => {payout/100:.2f} | ID => {id} | Item => {item}')
+        elif response_status["status"] == "needs_validation":
+            print(style.WHITE + f'[{datetime.now()}] => Unknown Status: Needs Validation | Payout => {payout/100:.2f} | ID => {id} | Item => {item}')
         elif lowest_ask == None:
                 print(style.MAGENTA + f'[{datetime.now()}] => Listed | Current Price => {price/100:.2f} | Lowest Price => N/A | ID => {id} | Item => {item}')
         else:
