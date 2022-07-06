@@ -107,7 +107,7 @@ def main():
             print(style.MAGENTA + f'[{datetime.now()}] => Listed | Current Price => {price/100:.2f} | Lowest Price => {lowest_ask/100:.2f} | ID => {id} | Item => {item}')
             if price > lowest_ask:
                 id_ucprice.append([id,lowest_ask-100])
-                print(style.RED + f'[{datetime.now()}] => !Over Lowest Ask [{price/100:.2f}][{id}]')
+                print(style.RED + f'[{datetime.now()}] => Over Lowest Ask [{price/100:.2f}][{id}]')
 
         
 
