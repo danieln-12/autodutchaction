@@ -1,6 +1,6 @@
 Updates over priced shoes on flightclub $1.
 
-How to run
+How to run (working on making a stable auto login)
 
 1. Download/clone the code
 2. Install the dependencies
