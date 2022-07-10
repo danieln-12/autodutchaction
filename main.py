@@ -1,6 +1,4 @@
-import email
-from itertools import product
-from unittest import result
+
 import requests
 from datetime import datetime
 import json
@@ -26,8 +24,11 @@ class style():
 
 
 
-cookies = {
-#copy cookies from /listed response(don't expire afaik),
+cookies = { #match the names within the '' to the cookies in the tab
+    '__cf_bm': '#pastecookiehere',
+    '_ga': '#pastecookiehere',
+    '_gid': '#pastecookiehere',
+    '_selluuid': '#pastecookiehere',
 }
 
 headers = {
@@ -46,13 +47,13 @@ headers = {
     'sec-fetch-mode': 'cors',
     'sec-fetch-site': 'same-origin',
     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-    'x-user-email': #youremail,
-    'x-user-token': #yourtoken,
+    'x-user-email': '#youremail',
+    'x-user-token': '#yourauthenticationToken',
 }
 
 params = {
     'direction': 'desc',
-    'perPage': '80',
+    'perPage': '80', #listingcount
     'sort': 'created_at',
     'status': [
         'on_sale',
@@ -66,21 +67,22 @@ params = {
 }
 
 def main():
-    print(style.YELLOW + f'[{datetime.now()}] => getting listing ids[request/listings]')
+    print(style.YELLOW + f'[{datetime.now()}] => getting listing ids[]')
     response = requests.get('https://sell.flightclub.com/api/me/listings', params=params, cookies=cookies, headers=headers)    
     response_data_ids = response.json()
     if response.status_code == 200:
         print(style.GREEN + f'[{datetime.now()}] => got listing ids[status:{response.status_code}]')
     else:
         print(style.RED + f'[{datetime.now()}] => error [{response.status_code}][{response}][auth error]')
-        time.sleep(3) #retry delay
+        time.sleep(3) #retry delay for errors
         main()
     
     listing_ids = [result['id'] for result in response_data_ids['results']]
     
     id_ucprice= []
     for i in range(len(listing_ids)):
-        response = requests.get(f'https://sell.flightclub.com/api/me/stock/{listing_ids[i]}/pricing', cookies=cookies, headers=headers) 
+        response = requests.get(f'https://sell.flightclub.com/api/me/stock/{listing_ids[i]}/pricing', cookies=cookies, headers=headers)
+        time.sleep(0.9) #listingdelay 
         response_price = response.json()
 
         price = response_price['priceCents']
@@ -106,7 +108,7 @@ def main():
         else:
             print(style.MAGENTA + f'[{datetime.now()}] => Listed | Current Price => {price/100:.2f} | Lowest Price => {lowest_ask/100:.2f} | ID => {id} | Item => {item}')
             if price > lowest_ask:
-                id_ucprice.append([id,lowest_ask-100])
+                id_ucprice.append([id,lowest_ask-100]) #remove '-100' if you want to match ask
                 print(style.RED + f'[{datetime.now()}] => Over Lowest Ask [{price/100:.2f}][{id}]')
 
         
@@ -118,6 +120,7 @@ def main():
         'apply_to_all': False,
         }
         response = requests.post(f'https://sell.flightclub.com/api/me/stock/{ids[0]}/pricing', cookies=cookies, headers=headers, json=post_data)
+        time.sleep(2) #updatedelay
         update_data = json.loads(response.text)
         if update_data["priceCents"] == ids[1]:
             print(style.GREEN + f'[{datetime.now()}] => ' f'Updated Ask => ${update_data["priceCents"]/100:.2f} '
