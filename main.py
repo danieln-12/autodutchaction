@@ -23,33 +23,12 @@ class style():
     RESET = '\033[0m'
 
 
+f = open('headers.json')
+headers = json.load(f)
 
-cookies = { #match the names within the '' to the cookies in the tab
-    '__cf_bm': '#pastecookiehere',
-    '_ga': '#pastecookiehere',
-    '_gid': '#pastecookiehere',
-    '_selluuid': '#pastecookiehere',
-}
 
-headers = {
-    'authority': 'sell.flightclub.com',
-    'accept': '*/*',
-    'accept-language': 'en-US,en;q=0.9',
-    'cache-control': 'no-cache',
-    'content-type': 'application/json',
-    'dnt': '1',
-    'pragma': 'no-cache',
-    'referer': 'https://sell.flightclub.com/home?status=listed',
-    'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
-    'sec-ch-ua-mobile': '?0',
-    'sec-ch-ua-platform': '"Windows"',
-    'sec-fetch-dest': 'empty',
-    'sec-fetch-mode': 'cors',
-    'sec-fetch-site': 'same-origin',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-    'x-user-email': '#youremail',
-    'x-user-token': '#yourauthenticationToken',
-}
+i = open('cookies.json')
+cookies = json.load(i)
 
 params = {
     'direction': 'desc',
