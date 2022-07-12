@@ -20,26 +20,40 @@ caps = {
         'w3c': False, 
     },
 }
-driver = webdriver.Chrome('chrome driver directory', desired_capabilities=caps)
+driver = webdriver.Chrome('chromedriverdirectory', desired_capabilities=caps)
 
 
 driver.get('https://sell.flightclub.com/login')
+(print("submitting login"))
 time.sleep(4)
 
-email = driver.find_element_by_xpath('//*[@id="app"]/div/div[2]/div[1]/div[3]/div/div/form/div[1]/div/input').send_keys('youremail')
+email = driver.find_element_by_xpath('//*[@id="app"]/div/div[2]/div[1]/div[3]/div/div/form/div[1]/div/input').send_keys('#YOUREMAIL')
 
-password = driver.find_element_by_xpath('//*[@id="app"]/div/div[2]/div[1]/div[3]/div/div/form/div[2]/div/input').send_keys('yourpassword')
+password = driver.find_element_by_xpath('//*[@id="app"]/div/div[2]/div[1]/div[3]/div/div/form/div[2]/div/input').send_keys('#YOURPASSWORD')
 
 time.sleep(0.4)
 
 submit = driver.find_element_by_xpath('//*[@id="app"]/div/div[2]/div[1]/div[3]/div/div/form/div[4]/button').click()
 
 time.sleep(2)
+print("getting tokens")
+print("getting cookies")
+
 
 request_log = driver.get_log('performance')
 
-    
-    
+selluuid = driver.get_cookie("_selluuid")
+_gat = driver.get_cookie("_gat")
+_gid = driver.get_cookie("_gid")
+_ga = driver.get_cookie("_ga")
+__cf_bm = driver.get_cookie("__cf_bm")
+
+gat = _gat['value']
+gid = _gid['value']
+ga = _ga['value']
+cf = __cf_bm['value']
+su = selluuid['value']
+
 for i in range(len(request_log)):
     message = json.loads(request_log[i]['message'])
     message = message['message']['params']
@@ -51,19 +65,42 @@ for i in range(len(request_log)):
     if(url == "https://sell.flightclub.com/api/me/login"):
         content = driver.execute_cdp_cmd('Network.getResponseBody', {'requestId': message['requestId']})
         s1 = json.loads(content['body'])
-        print(s1['user']['authenticationToken'])
+        token = s1['user']['authenticationToken']
+        email = s1['user']['email']
         break
 
-_selluuid = driver.get_cookie("_selluuid")
-_gat = driver.get_cookie("_gat")
-_gid = driver.get_cookie("_gid")
-_ga = driver.get_cookie("_ga")
-__cf_bm = driver.get_cookie("__cf_bm")
+
+headers = {
+    'authority': 'sell.flightclub.com',
+    'accept': '*/*',
+    'accept-language': 'en-US,en;q=0.9',
+    'cache-control': 'no-cache',
+    'dnt': '1',
+    'pragma': 'no-cache',
+    'referer': 'https://sell.flightclub.com/home?status=listed',
+    'sec-ch-ua': '".Not/A)Brand";v="99", "Google Chrome";v="103", "Chromium";v="103"',
+    'sec-ch-ua-mobile': '?0',
+    'sec-ch-ua-platform': '"Windows"',
+    'sec-fetch-dest': 'empty',
+    'sec-fetch-mode': 'cors',
+    'sec-fetch-site': 'same-origin',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
+    'x-user-email': email,
+    'x-user-token': token,
+}
+
+with open('headers.json', 'w', encoding='utf-8') as f:
+    json.dump(headers, f, ensure_ascii=False, indent=4)
 
 cookies = {
-    '__cf_bm': __cf_bm['value'],
-    '_ga': _ga['value'],
-    '_gid': _gid['value'],
-    '_gat': _gat['value'],
-    '_selluuid': _selluuid['value'],
+    '__cf_bm': cf,
+    '_ga': ga,
+    '_gid': gid,
+    '_gat': gat,
+    '_selluuid': su,
 }
+    
+
+  
+with open('cookies.json', 'w', encoding='utf-8') as f:
+    json.dump(cookies, f, ensure_ascii=False, indent=4)
