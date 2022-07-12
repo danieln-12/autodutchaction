@@ -1,4 +1,4 @@
-Updates over priced shoes on flightclub $1.
+Updates over priced shoes on flightclub -$1.
 
 How to run
 
