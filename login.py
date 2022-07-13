@@ -20,7 +20,7 @@ caps = {
         'w3c': False, 
     },
 }
-driver = webdriver.Chrome('C:/Users/danie/Downloads/chromedriver_win32 (5)/chromedriver.exe', desired_capabilities=caps)
+driver = webdriver.Chrome('#yourchromedriverdirectory', desired_capabilities=caps)
 
 
 driver.get('https://sell.flightclub.com/login')
