@@ -6,8 +6,10 @@ How to run:
 3. set it in the `login.py` file
 4. set your password and email in the `login.py` file
 5. run the file. (`CMD` in your directory then `python login.py`)
-6. it should open a browser, let it run while it grabs your user token and cookies
-7. run the main file
+6. You will need to submit a 2fa code 1 time only.
+7. it should open a browser, let it run while it grabs your user token and cookies
+8. These should last for a bit but if you experience any auth errors re run the file
+9. run the main file
 
 Settings:
 - you can set delays and change how many listings you want to scrape
