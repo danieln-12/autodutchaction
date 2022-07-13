@@ -5,6 +5,11 @@ import json
 from datetime import datetime
 import time
 import os
+import login
+
+#login call
+login.my_func()
+
 
 # System call
 os.system("")
@@ -54,6 +59,7 @@ def main():
     else:
         print(style.RED + f'[{datetime.now()}] => error [{response.status_code}][{response}][auth error]')
         time.sleep(3) #retry delay for errors
+        os.system('python login.py')
         main()
     
     listing_ids = [result['id'] for result in response_data_ids['results']]
