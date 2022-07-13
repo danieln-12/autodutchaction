@@ -20,7 +20,7 @@ caps = {
         'w3c': False, 
     },
 }
-driver = webdriver.Chrome('chromedriverdirectory', desired_capabilities=caps)
+driver = webdriver.Chrome('C:/Users/danie/Downloads/chromedriver_win32 (5)/chromedriver.exe', desired_capabilities=caps)
 
 
 driver.get('https://sell.flightclub.com/login')
@@ -36,23 +36,8 @@ time.sleep(0.4)
 submit = driver.find_element_by_xpath('//*[@id="app"]/div/div[2]/div[1]/div[3]/div/div/form/div[4]/button').click()
 
 time.sleep(2)
-print("getting tokens")
-print("getting cookies")
-
 
 request_log = driver.get_log('performance')
-
-selluuid = driver.get_cookie("_selluuid")
-_gat = driver.get_cookie("_gat")
-_gid = driver.get_cookie("_gid")
-_ga = driver.get_cookie("_ga")
-__cf_bm = driver.get_cookie("__cf_bm")
-
-gat = _gat['value']
-gid = _gid['value']
-ga = _ga['value']
-cf = __cf_bm['value']
-su = selluuid['value']
 
 for i in range(len(request_log)):
     message = json.loads(request_log[i]['message'])
@@ -68,6 +53,28 @@ for i in range(len(request_log)):
         token = s1['user']['authenticationToken']
         email = s1['user']['email']
         break
+
+facode = input('2fa code:\n')
+
+addcode = driver.find_element_by_xpath('//*[@id="app"]/div/div[2]/div[1]/div[3]/div/section/form/div[1]/div/input').send_keys(facode)
+time.sleep(2)
+submitcode = driver.find_element_by_xpath('//*[@id="app"]/div/div[2]/div[1]/div[3]/div/section/form/div[2]/button').click()
+time.sleep(2)
+get_home = driver.find_element_by_xpath('//*[@id="app"]/div/div[2]/div[1]/div[2]/div/div/a[1]').click
+
+selluuid = driver.get_cookie("_selluuid")
+_gat = driver.get_cookie("_gat")
+_gid = driver.get_cookie("_gid")
+_ga = driver.get_cookie("_ga")
+__cf_bm = driver.get_cookie("__cf_bm")
+
+gat = _gat['value']
+gid = _gid['value']
+ga = _ga['value']
+cf = __cf_bm['value']
+su = selluuid['value']
+
+
 
 
 headers = {
