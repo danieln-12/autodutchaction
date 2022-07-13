@@ -19,3 +19,6 @@ these are tagged under
 > these are not hard coded play around and see id reccomend default set
  - You can change if you want to match the ask as well
  >removing the `lowest_ask-100` `-100` on line 90 which will match the lowest ask
+
+Known errors:
+flightclub login page has V3 captcha which will ocassionally prompt a captcha, close the window and re run the file. Will add handling soon
