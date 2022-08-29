@@ -96,6 +96,8 @@ def main():
         elif len(response_status['conditions']) == True:
             cond1 = response_status['conditions'][0]
             print(style.MAGENTA + f'[{datetime.now()}] => Listed | Conditions => "{cond1}" | Current Price => {price/100:.2f} | Lowest Price => {l1ask/100:.2f} | ID => {id} | Item => {item}')
+        elif lowest_ask == None:
+            print(style.MAGENTA + f'[{datetime.now()}] => Listed | Current Price => {price/100:.2f} | Lowest Price => n/a | ID => {id} | Item => {item}')
         else:
             print(style.MAGENTA + f'[{datetime.now()}] => Listed | Current Price => {price/100:.2f} | Lowest Price => {lowest_ask/100:.2f} | ID => {id} | Item => {item}')
             if price > lowest_ask:
