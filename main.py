@@ -61,15 +61,12 @@ def main():
         time.sleep(3) #retry delay for errors
         os.system('python login.py')
         main()
-    
     listing_ids = [result['id'] for result in response_data_ids['results']]
-    
     id_ucprice= []
     for i in range(len(listing_ids)):
         response = requests.get(f'https://sell.flightclub.com/api/me/stock/{listing_ids[i]}/pricing', cookies=cookies, headers=headers)
         time.sleep(0.9) #listingdelay 
         response_price = response.json()
-
         price = response_price['priceCents']
         id = response_price['stockItemId']
         item = response_price['product']['name']
@@ -77,7 +74,7 @@ def main():
         response_status = response.json()
         lowest_ask = response_status['lowestConsignedPriceCents']
         payout = ((0.905 * price) - 500 ) *0.971
-        
+
         if response_status["status"] == "reserved":
                 print(style.BLUE + f'[{datetime.now()}] => Pending Sold | Payout => {payout/100:.2f} | ID => {id} | Item => {item}')
         elif response_status["status"] == "hidden":
@@ -88,8 +85,9 @@ def main():
             print(style.WHITE + f'[{datetime.now()}] => Unknown Status: Pending Writeoff | Payout => {payout/100:.2f} | ID => {id} | Item => {item}')
         elif response_status["status"] == "needs_validation":
             print(style.WHITE + f'[{datetime.now()}] => Unknown Status: Needs Validation | Payout => {payout/100:.2f} | ID => {id} | Item => {item}')
-        elif lowest_ask == None:
-                print(style.MAGENTA + f'[{datetime.now()}] => Listed | Current Price => {price/100:.2f} | Lowest Price => N/A | ID => {id} | Item => {item}')
+        elif len(response_status['conditions']) == True:
+            cond1 = response_status['conditions'][0]
+            print(style.MAGENTA + f'[{datetime.now()}] => Listed | Conditions => {cond1} | Current Price => {price/100:.2f} | Lowest Price => {l1ask/100:.2f} | ID => {id} | Item => {item}')
         else:
             print(style.MAGENTA + f'[{datetime.now()}] => Listed | Current Price => {price/100:.2f} | Lowest Price => {lowest_ask/100:.2f} | ID => {id} | Item => {item}')
             if price > lowest_ask:
@@ -113,6 +111,4 @@ def main():
               f' | Item => {update_data["name"]}')
         else:
             print(style.RED + f'[{datetime.now()}] => unknown status[{response.text}]')
-
-
 main()
